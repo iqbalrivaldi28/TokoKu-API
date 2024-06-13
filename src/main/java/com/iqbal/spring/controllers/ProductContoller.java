@@ -2,7 +2,10 @@ package com.iqbal.spring.controllers;
 
 import com.iqbal.spring.model.entity.Product;
 import com.iqbal.spring.services.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,7 +18,13 @@ public class ProductContoller {
     private ProductService productService;
 
     @PostMapping
-    public Product create(@RequestBody Product product){
+    public Product create(@Valid @RequestBody Product product, Errors errors){
+        if (errors.hasErrors()){
+            for(ObjectError error: errors.getAllErrors()){
+                System.out.println(error.getDefaultMessage());
+            }
+            throw new RuntimeException("Validation error (a.n iqbal)");
+        }
         return productService.save(product);
     }
 
