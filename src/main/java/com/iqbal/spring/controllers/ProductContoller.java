@@ -1,9 +1,12 @@
 package com.iqbal.spring.controllers;
 
+import com.iqbal.spring.dto.ResponseData;
 import com.iqbal.spring.model.entity.Product;
 import com.iqbal.spring.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +21,25 @@ public class ProductContoller {
     private ProductService productService;
 
     @PostMapping
-    public Product create(@Valid @RequestBody Product product, Errors errors){
+    public ResponseEntity<ResponseData<Product>> create(@Valid @RequestBody Product product, Errors errors){
+
+        ResponseData<Product> responseData = new ResponseData<>();
+
+        // Kalau error data tidak sesuai
         if (errors.hasErrors()){
             for(ObjectError error: errors.getAllErrors()){
-                System.out.println(error.getDefaultMessage());
+               responseData.getMessage().add(error.getDefaultMessage());
             }
-            throw new RuntimeException("Validation error (a.n iqbal)");
+
+            responseData.setStatus(false);
+            responseData.setPayload(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
-        return productService.save(product);
+
+        // Kalau data sesuai langsung kita return datanya
+        responseData.setStatus(true);
+        responseData.setPayload(productService.save(product));
+        return ResponseEntity.ok(responseData);
     }
 
     @GetMapping
