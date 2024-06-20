@@ -25,6 +25,9 @@ public class Product implements Serializable {
 
     private double price;
 
+    @ManyToOne
+    private Category category;
+
     public Product() {
     }
 
@@ -65,5 +68,13 @@ public class Product implements Serializable {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
