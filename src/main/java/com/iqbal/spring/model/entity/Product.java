@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "tbl_product")
@@ -27,6 +28,15 @@ public class Product implements Serializable {
 
     @ManyToOne
     private Category category;
+
+    @ManyToMany
+    @JoinTable(
+            name = "tbl_product_supplier",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "suplier_id")
+    )
+    private Set<Suplier> supliers;
+
 
     public Product() {
     }
@@ -76,5 +86,13 @@ public class Product implements Serializable {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Set<Suplier> getSupliers() {
+        return supliers;
+    }
+
+    public void setSupliers(Set<Suplier> supliers) {
+        this.supliers = supliers;
     }
 }

@@ -3,6 +3,7 @@ package com.iqbal.spring.model.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "tbl_suplier")
@@ -22,6 +23,9 @@ public class Suplier implements Serializable {
 
     @Column(length = 50, nullable = false, unique = true)
     private String email;
+
+    @ManyToMany(mappedBy = "supliers")
+    private Set<Product> products;
 
     public Suplier() {
     }
@@ -63,5 +67,14 @@ public class Suplier implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
     }
 }
