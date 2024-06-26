@@ -23,6 +23,7 @@ public class CategoryController {
     @Autowired
     private ModelMapper modelMapper;
 
+    @PostMapping
     public ResponseEntity<ResponseData<Category>> create (@Valid @RequestBody CategoryDTO categoryDTO, Errors errors){
         ResponseData<Category> responseData = new ResponseData<>();
 
@@ -59,8 +60,8 @@ public class CategoryController {
         categoryService.removeOne(id);
     }
 
-    @PutMapping
-    ResponseEntity<ResponseData<Category>> update (@Valid @RequestBody CategoryDTO categoryDTO, Errors errors){
+    @PutMapping("/{id}")
+    ResponseEntity<ResponseData<Category>> update (@PathVariable("id") Long id, @Valid @RequestBody CategoryDTO categoryDTO, Errors errors){
         ResponseData<Category> responseData = new ResponseData<>();
 
         if (errors.hasErrors()){
@@ -74,6 +75,7 @@ public class CategoryController {
         }
 
         Category category = modelMapper.map(categoryDTO, Category.class);
+        category.setId(id);
 
         responseData.setStatus(true);
         responseData.setPayload(categoryService.save(category));

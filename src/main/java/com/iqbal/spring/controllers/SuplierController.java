@@ -73,8 +73,8 @@ public class SuplierController {
         suplierService.removeOne(id);
     }
 
-    @PutMapping
-    ResponseEntity<ResponseData<Suplier>> update(@Valid @RequestBody SuplierDTO suplierDTO, Errors errors ){
+    @PutMapping("/{id}")
+    ResponseEntity<ResponseData<Suplier>> update(@PathVariable("id") Long id, @Valid @RequestBody SuplierDTO suplierDTO, Errors errors ){
         ResponseData<Suplier> responseData = new ResponseData<>();
 
         if (errors.hasErrors()){
@@ -88,6 +88,7 @@ public class SuplierController {
         }
 
         Suplier suplier = modelMapper.map(suplierDTO, Suplier.class);
+        suplier.setId(id);
 
         responseData.setStatus(true);
         responseData.setPayload(suplierService.save(suplier));
