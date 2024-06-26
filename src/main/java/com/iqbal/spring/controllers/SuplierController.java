@@ -5,6 +5,7 @@ import com.iqbal.spring.dto.SuplierDTO;
 import com.iqbal.spring.model.entity.Suplier;
 import com.iqbal.spring.services.SuplierService;
 import jakarta.validation.Valid;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,9 @@ public class SuplierController {
 
     @Autowired
     private SuplierService suplierService;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @PostMapping
     public ResponseEntity<ResponseData<Suplier>> create (@Valid @RequestBody SuplierDTO suplierDTO, Errors errors){
@@ -38,15 +42,16 @@ public class SuplierController {
         // Kalau ngak ada error kita jalanin ini
         // Sebelumnya kita ubah/transform supplier jadi supplierDto karena pada controler ini mintanya object suplierDto
 
-         Suplier suplier = new Suplier();
+        // Konversi DTO ke Entity Class
 
         // { * KALAU NGAK PAKE MODEL MAPPER * }
+        // Suplier suplier = new Suplier();
         // suplier.setName(suplierDTO.getName());
         // suplier.setAddress(suplierDTO.getAddress());
         // suplier.setEmail(suplierDTO.getEmail());
 
-        // { * KALAU PAKE MODEL MAPPER * }
-
+        // { * KALAU PAKE MODEL MAPPER  (Lebih simple) * }
+        Suplier suplier = modelMapper.map(suplierDTO, Suplier.class);
 
         responseData.setStatus(true);
         responseData.setPayload(suplierService.save(suplier));
@@ -63,7 +68,31 @@ public class SuplierController {
         return suplierService.findOne(id);
     }
 
+    @DeleteMapping("/{id}")
+    public void removeOne(@PathVariable("id") Long id){
+        suplierService.removeOne(id);
+    }
 
+    @PutMapping
+    ResponseEntity<ResponseData<Suplier>> update(@Valid @RequestBody SuplierDTO suplierDTO, Errors errors ){
+        ResponseData<Suplier> responseData = new ResponseData<>();
 
+        if (errors.hasErrors()){
+            for (ObjectError error : errors.getAllErrors()){
+                responseData.getMessage().add(error.getDefaultMessage());
+            }
+
+            responseData.setStatus(false);
+            responseData.setPayload(null);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        Suplier suplier = modelMapper.map(suplierDTO, Suplier.class);
+
+        responseData.setStatus(true);
+        responseData.setPayload(suplierService.save(suplier));
+        return ResponseEntity.ok(responseData);
+
+    }
 
 }
