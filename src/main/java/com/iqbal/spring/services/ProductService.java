@@ -1,6 +1,7 @@
 package com.iqbal.spring.services;
 
 import com.iqbal.spring.model.entity.Product;
+import com.iqbal.spring.model.entity.Suplier;
 import com.iqbal.spring.model.repository.ProductRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,5 +41,17 @@ public class ProductService {
     // Custom query
     public List<Product> findByName(String name){
         return productRepo.findByNameContains(name);
+    }
+
+    // Untuk nampilin suplier
+    public void addSuplier(Suplier suplier, Long productId){
+        Product product = findOne(productId);
+
+        if (product == null){
+            throw new RuntimeException("Product with ID: " + productId + " Not Found");
+        }
+
+        product.getSupliers().add(suplier);
+        save(product);
     }
 }

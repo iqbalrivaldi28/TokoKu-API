@@ -1,7 +1,9 @@
 package com.iqbal.spring.controllers;
 
 import com.iqbal.spring.dto.ResponseData;
+import com.iqbal.spring.dto.SuplierDTO;
 import com.iqbal.spring.model.entity.Product;
+import com.iqbal.spring.model.entity.Suplier;
 import com.iqbal.spring.services.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +82,12 @@ public class ProductContoller {
     @GetMapping("/search")
     public List<Product> findByName(@RequestParam("name") String name){
         return productService.findByName(name);
+    }
+
+    // Untuk nambah suplier ke relasi product
+    @PostMapping("/{id}")
+    public void addSuplier(@RequestBody Suplier suplier, @PathVariable("id") Long productId){
+        productService.addSuplier(suplier, productId);
     }
 
 }
