@@ -8,6 +8,9 @@ public class ResponseData<T> {
     private List<String> message = new ArrayList<>();
     private T payload;
 
+
+
+
     public boolean isStatus() {
         return status;
     }
