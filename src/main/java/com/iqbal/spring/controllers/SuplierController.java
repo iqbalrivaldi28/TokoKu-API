@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/suppliers")
@@ -21,6 +19,7 @@ public class SuplierController {
     @Autowired
     private SuplierService suplierService;
 
+    @PostMapping
     public ResponseEntity<ResponseData<Suplier>> create (@Valid @RequestBody SuplierDTO suplierDTO, Errors errors){
         ResponseData<Suplier> responseData = new ResponseData<>();
 
@@ -39,14 +38,29 @@ public class SuplierController {
         // Kalau ngak ada error kita jalanin ini
         // Sebelumnya kita ubah/transform supplier jadi supplierDto karena pada controler ini mintanya object suplierDto
 
-        Suplier suplier = new Suplier();
-        suplier.setName(suplierDTO.getName());
-        suplier.setAddress(suplierDTO.getAddress());
-        suplier.setEmail(suplierDTO.getEmail());
+         Suplier suplier = new Suplier();
+
+        // { * KALAU NGAK PAKE MODEL MAPPER * }
+        // suplier.setName(suplierDTO.getName());
+        // suplier.setAddress(suplierDTO.getAddress());
+        // suplier.setEmail(suplierDTO.getEmail());
+
+        // { * KALAU PAKE MODEL MAPPER * }
+
 
         responseData.setStatus(true);
         responseData.setPayload(suplierService.save(suplier));
         return ResponseEntity.ok(responseData);
+    }
+
+    @GetMapping
+    public Iterable<Suplier> findAll(){
+        return suplierService.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Suplier findOne(@PathVariable("id") Long id){
+        return suplierService.findOne(id);
     }
 
 
