@@ -17,6 +17,9 @@ public class Category implements Serializable {
     @Column(length = 100, nullable = false)
     private String name;
 
+
+
+
     public Category() {
     }
 
